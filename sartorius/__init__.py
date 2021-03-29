@@ -15,6 +15,7 @@ def command_line():
 
     parser = argparse.ArgumentParser(description="Read scale status.")
     parser.add_argument('address', help="The IP address of the scale.")
+    parser.add_argument('--port', '-p', help="The port of the scale (default 49155)")
     parser.add_argument('--no-info', '-n', action='store_true', help="Exclude "
                         "scale information. Reduces communication overhead.")
     parser.add_argument('--zero', '-z', action='store_true', help="Tares and "

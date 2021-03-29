@@ -27,7 +27,7 @@ pip install sartorius
 Scale Setup
 ===========
 
-For scale setup, navigate to `SETUP` - `UNICOM` - `DATAPROT` - `ETHER`.
+For Minebea scale setup, navigate to `SETUP` - `UNICOM` - `DATAPROT` - `ETHER`.
 
   * Make sure `SRC.IP` is set to a valid LAN address
   * Ensure `MODE` - `SBI-SRV` - `6.1.1` is set (manual says this should be default but it is not)
@@ -52,6 +52,7 @@ $ sartorius scale-ip.local
     }
 }
 ```
+If using a port other than the default of 49155 e.g. for a MODBUS gateway, use `--port``
 
 You can tare and zero with `--zero` and remove the info field with `--no-info`.
 See `sartorius --help` for more.

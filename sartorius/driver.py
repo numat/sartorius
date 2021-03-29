@@ -21,6 +21,8 @@ class Scale(TcpClient):
     def __init__(self, ip, port=49155):
         """Set up connection parameters with default scale port."""
         self.units = None
+        if not isinstance(port, int) or port > 65535:
+            raise ValueError('Ports must be integers between 0 and 65535.')
         super().__init__(ip, port)
 
     async def get(self):
