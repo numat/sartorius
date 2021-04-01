@@ -28,7 +28,7 @@ def command_line():
             if args.zero:
                 await scale.zero()
             d = await scale.get()
-            if not args.no_info:
+            if not args.no_info and d.get('on', True):
                 d['info'] = await scale.get_info()
             print(json.dumps(d, indent=4))
     asyncio.run(get())
