@@ -52,7 +52,9 @@ $ sartorius scale-ip.local
     }
 }
 ```
-If using a port other than the default of 49155 e.g. for a MODBUS gateway, use `--port``
+If using a port other than the default of 49155 e.g. for a MODBUS gateway, use `--port`
+or a colon between the IP address and port.
+`sartorius 192.168.1.1 --port 10000` or `sartorius 192.168.1.1:12345`
 
 You can tare and zero with `--zero` and remove the info field with `--no-info`.
 See `sartorius --help` for more.
