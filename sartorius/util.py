@@ -32,8 +32,8 @@ class TcpClient():
         self.reconnecting = False
         self.timeouts = 0
         self.max_timeouts = 10
-        self.waiting = False
         self.connection = None
+        self.lock = asyncio.Lock()
 
     def __enter__(self):
         """Provide entrance to context manager."""
@@ -72,17 +72,14 @@ class TcpClient():
         """Write a command and read a response.
 
         As industrial devices are commonly unplugged, this has been expanded to
-        handle recovering from disconnects.
+        handle recovering from disconnects.  A lock is used to queue multiple requests.
         """
-        if self.waiting:
-            return None
-        self.waiting = True
-        await self._handle_connection()
-        if self.open:
-            response = await self._handle_communication(command)
-        else:
-            response = None
-        self.waiting = False
+        async with self.lock:  # lock releases on CancelledError
+            await self._handle_connection()
+            if self.open:
+                response = await self._handle_communication(command)
+            else:
+                response = None
         return response
 
     async def _handle_connection(self):
