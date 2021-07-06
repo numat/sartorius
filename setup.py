@@ -6,7 +6,7 @@ with open('README.md', 'r') as in_file:
 
 setup(
     name="sartorius",
-    version="0.1.2",
+    version="0.2.0",
     description="Python driver for Sartorius and Minebea Intec scales.",
     long_description=long_description,
     long_description_content_type='text/markdown',
