@@ -18,7 +18,7 @@ class Scale(TcpClient):
     standardized communications protocol.
     """
 
-    def __init__(self, ip: str, port: int):
+    def __init__(self, ip: str, port: int = 49155):
         """Set up connection parameters, IP address and port."""
         self.units = None
         if ":" in ip:
