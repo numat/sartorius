@@ -33,7 +33,7 @@ class TcpClient():
         self.timeouts = 0
         self.max_timeouts = 10
         self.connection = None
-        self.lock = asyncio.Lock()
+        self.lock = None
 
     def __enter__(self):
         """Provide entrance to context manager."""
@@ -74,6 +74,9 @@ class TcpClient():
         As industrial devices are commonly unplugged, this has been expanded to
         handle recovering from disconnects.  A lock is used to queue multiple requests.
         """
+        if not self.lock:
+            # lock initialized here so the loop exists.
+            self.lock = asyncio.Lock()
         async with self.lock:  # lock releases on CancelledError
             await self._handle_connection()
             if self.open:
