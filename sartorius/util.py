@@ -35,10 +35,6 @@ class TcpClient():
         self.connection = None
         self.lock = None
 
-    def __enter__(self):
-        """Provide entrance to context manager."""
-        return self
-
     async def __aenter__(self):
         """Provide async entrance to context manager.
 
@@ -80,7 +76,11 @@ class TcpClient():
         async with self.lock:  # lock releases on CancelledError
             await self._handle_connection()
             if self.open:
-                response = await self._handle_communication(command)
+                try:
+                    response = await self._handle_communication(command)
+                except asyncio.exceptions.IncompleteReadError:
+                    logger.error('IncompleteReadError.  Are there multiple connections?')
+                    return {}
             else:
                 response = None
         return response

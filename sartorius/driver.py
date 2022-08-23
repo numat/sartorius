@@ -33,11 +33,19 @@ class Scale(TcpClient):
 
     async def get_info(self):
         """Get scale model, serial, and software version numbers."""
-        return {
-            'model': (await self._write_and_read('\x1bx1_') or '').strip(),
-            'serial': (await self._write_and_read('\x1bx2_') or '').strip(),
-            'software': (await self._write_and_read('\x1bx3_') or '').strip(),
+        model = (await self._write_and_read('\x1bx1_')).strip()
+        serial = (await self._write_and_read('\x1bx2_')).strip()
+        software = (await self._write_and_read('\x1bx3_')).strip()
+        response = {
+            'model': model,
+            'serial': serial,
+            'software': software,
         }
+        for item in response.values():
+            if (' + ' in item or ' kg' in item):
+                logger.error(f"Received malformed data: {response}")
+                return {}
+        return response
 
     async def zero(self):
         """Tare and zero the scale."""
