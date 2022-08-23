@@ -44,7 +44,7 @@ class TcpClient():
 
         Contrasting synchronous access, this will connect on initialization.
         """
-        await self._connect()
+        await self._handle_connection()
         return self
 
     def __exit__(self, *args):
