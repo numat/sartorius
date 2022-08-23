@@ -89,7 +89,7 @@ class TcpClient():
         """Automatically maintain TCP connection."""
         try:
             if not self.open:
-                await asyncio.wait_for(self._connect(), timeout=0.25)
+                await asyncio.wait_for(self._connect(), timeout=0.5)
             self.reconnecting = False
         except (asyncio.TimeoutError, OSError):
             if not self.reconnecting:
@@ -101,7 +101,7 @@ class TcpClient():
         try:
             self.connection['writer'].write(command.encode() + self.eol)
             future = self.connection['reader'].readuntil(self.eol)
-            line = await asyncio.wait_for(future, timeout=0.25)
+            line = await asyncio.wait_for(future, timeout=0.5)
             result = line.decode()
             self.timeouts = 0
         except (asyncio.TimeoutError, TypeError, OSError):
