@@ -80,7 +80,11 @@ class TcpClient():
         async with self.lock:  # lock releases on CancelledError
             await self._handle_connection()
             if self.open:
-                response = await self._handle_communication(command)
+                try:
+                    response = await self._handle_communication(command)
+                except asyncio.exceptions.IncompleteReadError:
+                    logger.error('IncompleteReadError.  Are there multiple connections?')
+                    return {}
             else:
                 response = None
         return response
