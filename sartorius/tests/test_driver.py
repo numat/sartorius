@@ -16,9 +16,9 @@ def scale_driver():
 @pytest.fixture
 def expected_response():
     """Return mocked scale data."""
-    return {"model": "SIWADCP-1-",
-            "serial": "37454321",
-            "software": "00-37-09"}
+    return {'model': 'SIWADCP-1-',
+            'serial': '37454321',
+            'software': '00-37-09'}
 
 
 @mock.patch('sartorius.Scale', Scale)
@@ -32,3 +32,15 @@ def test_driver_cli(capsys):
 async def test_get_response(scale_driver, expected_response):
     """Confirm that the driver returns correct values on get_info() calls."""
     assert expected_response == await scale_driver.get_info()
+
+
+async def test_readme_example(expected_response):
+    """Confirm the readme example using an async context manager works."""
+
+    async def get():
+        async with Scale('scale-ip.local') as scale:
+            await scale.zero()             # Zero and tare the scale
+            response = await scale.get()       # Get mass, units, stability
+            assert response['stable'] is True
+            assert expected_response == await scale.get_info()  # Get model, serial, software
+    await get()
