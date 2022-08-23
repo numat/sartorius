@@ -14,6 +14,13 @@ setup(
     author="Patrick Fuller",
     author_email="pat@numat-tech.com",
     packages=['sartorius'],
+    extras_require={
+        'test': ['pytest>=6,<8',
+                 'pytest-cov>=2,<4',
+                 'pytest-asyncio==0.*',
+                 'flake8==5.*',
+                 'flake8-docstrings==1.*']
+    },
     entry_points={
         'console_scripts': [('sartorius = sartorius:command_line')]
     },

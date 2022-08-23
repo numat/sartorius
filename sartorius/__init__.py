@@ -7,7 +7,7 @@ Copyright (C) 2019 NuMat Technologies
 from sartorius.driver import Scale
 
 
-def command_line():
+def command_line(args=None):
     """Command line tool exposed through package install."""
     import argparse
     import asyncio
@@ -21,7 +21,7 @@ def command_line():
                         "scale information. Reduces communication overhead.")
     parser.add_argument('-z', '--zero', action='store_true', help="Tares and "
                         "zeroes the scale.")
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     async def get():
         async with Scale(args.address, args.port) as scale:
