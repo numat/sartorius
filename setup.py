@@ -18,7 +18,7 @@ setup(
         'test': ['pytest>=6,<8',
                  'pytest-cov>=2,<4',
                  'pytest-asyncio==0.*',
-                 'flake8==5.*',
+                 'flake8>=5.*',
                  'flake8-docstrings==1.*']
     },
     entry_points={
