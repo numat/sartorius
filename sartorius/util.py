@@ -32,7 +32,7 @@ class TcpClient():
         self.reconnecting = False
         self.timeouts = 0
         self.max_timeouts = 10
-        self.connection = None
+        self.connection = {}
         self.lock = None
 
     async def __aenter__(self):
