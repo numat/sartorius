@@ -19,7 +19,8 @@ setup(
                  'pytest-cov>=2,<4',
                  'pytest-asyncio==0.*',
                  'flake8>=5.*',
-                 'flake8-docstrings==1.*']
+                 'flake8-docstrings==1.*',
+                 'ruff==0.0.260']
     },
     entry_points={
         'console_scripts': [('sartorius = sartorius:command_line')]
