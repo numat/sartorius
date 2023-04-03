@@ -7,13 +7,13 @@ from sartorius import command_line
 from sartorius.mock import Scale
 
 
-@pytest.fixture
+@pytest.fixture()
 def scale_driver():
     """Confirm the scale correctly initializes."""
     return Scale('fakeip')
 
 
-@pytest.fixture
+@pytest.fixture()
 def expected_response():
     """Return mocked scale data."""
     return {'model': 'SIWADCP-1-',

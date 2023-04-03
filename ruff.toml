@@ -1,0 +1,17 @@
+line-length = 99
+ignore = [
+    "PLR2004",
+    "D104",
+    "D107",
+    "C901",
+]
+select = ["C", "E", "F", "UP", "YTT", "PT"]
+# "SIM" flake-simplify
+# "ARG" flake8-unused args
+# "B" bandit
+# "I" isort conflicts with isort config
+# "RUF" ruff base config
+[pydocstyle]
+convention = "pep257"
+[flake8-unused-arguments]
+ignore-variadic-names = true
