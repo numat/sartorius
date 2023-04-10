@@ -10,7 +10,7 @@ setup(
     description="Python driver for Sartorius and Minebea Intec scales.",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="http://github.com/numat/sartorius/",
+    url="https://github.com/numat/sartorius/",
     author="Patrick Fuller",
     author_email="pat@numat-tech.com",
     packages=['sartorius'],
@@ -18,9 +18,8 @@ setup(
         'test': ['pytest>=6,<8',
                  'pytest-cov>=2,<4',
                  'pytest-asyncio==0.*',
-                 'flake8>=5.*',
-                 'flake8-docstrings==1.*',
-                 'ruff==0.0.260']
+                 'ruff==0.0.261'
+                 ]
     },
     entry_points={
         'console_scripts': [('sartorius = sartorius:command_line')]

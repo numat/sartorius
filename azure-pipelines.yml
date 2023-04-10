@@ -32,11 +32,6 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    flake8
-  displayName: 'Lint with flake8'
-
-- script: |
-    source $(Pipeline.Workspace)/venv/bin/activate
     ruff .
   displayName: 'Lint with ruff'
 

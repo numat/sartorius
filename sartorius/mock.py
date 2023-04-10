@@ -1,7 +1,7 @@
 """Contains mocks for driver objects for offline testing."""
 
 import asyncio
-from random import random, choice
+from random import choice, random
 from unittest.mock import MagicMock
 
 

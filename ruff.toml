@@ -5,11 +5,10 @@ ignore = [
     "D107",
     "C901",
 ]
-select = ["C", "E", "F", "UP", "YTT", "PT"]
+select = ["C", "E", "F", "I", "UP", "YTT", "PT"]
 # "SIM" flake-simplify
 # "ARG" flake8-unused args
 # "B" bandit
-# "I" isort conflicts with isort config
 # "RUF" ruff base config
 [pydocstyle]
 convention = "pep257"
