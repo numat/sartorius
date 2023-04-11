@@ -15,11 +15,13 @@ setup(
     author_email="pat@numat-tech.com",
     packages=['sartorius'],
     extras_require={
-        'test': ['pytest>=6,<8',
-                 'pytest-cov>=2,<4',
-                 'pytest-asyncio==0.*',
-                 'ruff==0.0.261'
-                 ]
+        'test': [
+            'mypy==1.2.0',
+            'pytest>=6,<8',
+            'pytest-cov>=2,<4',
+            'pytest-asyncio==0.*',
+            'ruff==0.0.261'
+        ]
     },
     entry_points={
         'console_scripts': [('sartorius = sartorius:command_line')]
