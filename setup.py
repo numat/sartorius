@@ -14,6 +14,7 @@ setup(
     author="Patrick Fuller",
     author_email="pat@numat-tech.com",
     packages=['sartorius'],
+    package_data={'sartorius': ['py.typed']},
     extras_require={
         'test': [
             'mypy==1.2.0',
