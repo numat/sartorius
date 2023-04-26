@@ -18,28 +18,32 @@ class Scale(TcpClient):
     standardized communications protocol.
     """
 
-    def __init__(self, ip: str, port: int = 49155):
+    def __init__(self, ip: str, port: int = 49155) -> None:
         """Set up connection parameters, IP address and port."""
-        self.units = None
+        self.units: str = ""
         if ":" in ip:
             port = int(ip.split(":")[1])
             ip = ip.split(':')[0]
         super().__init__(ip, port)
 
-    async def get(self):
+    async def get(self) -> dict:
         """Get scale reading."""
         response = await self._write_and_read('\x1bP')
+        if not response:
+            raise OSError("Unable to get reading from scale.")
         return self._parse(response)
 
-    async def get_info(self):
+    async def get_info(self) -> dict:
         """Get scale model, serial, and software version numbers."""
-        model = (await self._write_and_read('\x1bx1_')).strip()
-        serial = (await self._write_and_read('\x1bx2_')).strip()
-        software = (await self._write_and_read('\x1bx3_')).strip()
+        model = await self._write_and_read('\x1bx1_')
+        serial = await self._write_and_read('\x1bx2_')
+        software = await self._write_and_read('\x1bx3_')
+        if not (model and serial and software):
+            raise OSError("Unable to get information from scale.")
         response = {
-            'model': model,
-            'serial': serial,
-            'software': software,
+            'model': model.strip(),
+            'serial': serial.strip(),
+            'software': software.strip(),
         }
         for item in response.values():
             if (' + ' in item or ' kg' in item):
@@ -47,11 +51,11 @@ class Scale(TcpClient):
                 return {}
         return response
 
-    async def zero(self):
+    async def zero(self) -> None:
         """Tare and zero the scale."""
         await self._write_and_read('\x1bT')
 
-    def _parse(self, response):
+    def _parse(self, response: str) -> dict:
         """Parse a scale response.
 
         Scale weight is returned according to the SMA communication standard:

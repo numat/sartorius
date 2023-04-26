@@ -4,10 +4,12 @@ Python driver for Sartorius and Minebea Intec scales.
 Distributed under the GNU General Public License v2
 Copyright (C) 2019 NuMat Technologies
 """
+from typing import Any
+
 from sartorius.driver import Scale
 
 
-def command_line(args=None):
+def command_line(args: Any = None) -> None:
     """Command line tool exposed through package install."""
     import argparse
     import asyncio
@@ -23,7 +25,7 @@ def command_line(args=None):
                         "zeroes the scale.")
     args = parser.parse_args(args)
 
-    async def get():
+    async def get() -> None:
         async with Scale(args.address, args.port) as scale:
             if args.zero:
                 await scale.zero()
