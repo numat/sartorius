@@ -3,10 +3,8 @@
 Distributed under the GNU General Public License v2
 Copyright (C) 2019 NuMat Technologies
 """
-try:
-    import asyncio
-except ImportError:
-    raise ImportError("TCP connections require python >=3.5.")
+
+import asyncio
 import logging
 
 logger = logging.getLogger('sartorius')
