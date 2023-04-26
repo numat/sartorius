@@ -5,11 +5,22 @@ ignore = [
     "D107",
     "C901",
 ]
-select = ["C", "E", "F", "I", "UP", "YTT", "PT"]
-# "SIM" flake-simplify
-# "ARG" flake8-unused args
-# "B" bandit
-# "RUF" ruff base config
+select = [
+  "ARG", # flake8-unused args
+  "B",   # bandit
+  "C",   # complexity
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "PT",  # flake8-pytest
+  "RUF", # ruff base config
+  "SIM", # flake-simplify
+  "UP",  # pyupgrade
+  "YTT", # flake8-2020
+  ]
+
+target-version = "py38"
 [pydocstyle]
 convention = "pep257"
 [flake8-unused-arguments]
