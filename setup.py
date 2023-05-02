@@ -21,7 +21,7 @@ setup(
             'pytest>=6,<8',
             'pytest-cov>=4,<5',
             'pytest-asyncio==0.*',
-            'ruff==0.0.263'
+            'ruff==0.0.264'
         ]
     },
     entry_points={
