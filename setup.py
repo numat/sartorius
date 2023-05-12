@@ -17,7 +17,7 @@ setup(
     package_data={'sartorius': ['py.typed']},
     extras_require={
         'test': [
-            'mypy==1.2.0',
+            'mypy==1.3.0',
             'pytest>=6,<8',
             'pytest-cov>=4,<5',
             'pytest-asyncio==0.*',
