@@ -52,6 +52,13 @@ def test_parse(scale_driver, response, expected):
     assert result['stable'] == expected[2]
 
 
+def test_parse_errors(scale_driver):
+    """Test error handling of response parsing code."""
+    response = 'G     +   0.1234 g  \r\n'
+    with pytest.raises(ValueError, match='This driver only supports net weight.'):
+        scale_driver._parse(response)
+
+
 async def test_get_response(scale_driver, expected_response):
     """Confirm that the driver returns correct values on get_info() calls."""
     assert expected_response == await scale_driver.get_info()
