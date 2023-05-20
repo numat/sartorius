@@ -5,8 +5,18 @@ from random import choice, random
 from typing import Any
 from unittest.mock import MagicMock
 
+from .driver import Scale as RealScale
 
-class Scale(MagicMock):
+
+class AsyncClientMock(MagicMock):
+    """Magic mock that works with async methods."""
+
+    async def __call__(self, *args, **kwargs):  # type: ignore [no-untyped-def]
+        """Convert regular mocks into into an async coroutine."""
+        return super().__call__(*args, **kwargs)
+
+
+class Scale(RealScale):
     """Mocks the Scale driver for offline testing."""
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -15,14 +25,6 @@ class Scale(MagicMock):
         self.info = {"model": "SIWADCP-1-",
                      "serial": "37454321",
                      "software": "00-37-09"}
-
-    async def __aenter__(self, *args: Any) -> Any:
-        """Set up connection."""
-        return self
-
-    async def __aexit__(self, *args: Any) -> None:
-        """Close connection."""
-        pass
 
     async def get(self) -> dict:
         """Get scale reading."""
