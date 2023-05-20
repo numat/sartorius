@@ -19,14 +19,14 @@ class Scale:
     standardized communications protocol.
     """
 
-    def __init__(self, ip: str = None, port: int = 49155,
-                 address: str = None, **kwargs) -> None:
+    def __init__(self, ip: str = '', port: int = 49155,
+                 address: str = '', **kwargs: Any) -> None:
         """Set up connection parameters, IP address and port.
 
         Accepts either an address string (TCP or serial), or combination
         of port & ip (TCP, backwards compatible)
         """
-        if ip:
+        if ip != '':
             if ":" in ip:
                 port = int(ip.split(":")[1])
                 ip = ip.split(':')[0]

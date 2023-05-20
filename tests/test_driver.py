@@ -29,6 +29,26 @@ def test_driver_cli(capsys):
     assert '"stable": true' in captured.out
 
 
+def test_parse(scale_driver):
+    """Test the response parsing code.
+
+    Scale weight is returned according to the SMA communication standard:
+    K K K K K K + * A A A A A A A A * E E E CR LF
+    K: ID code character
+    +: plus or minus
+    *: space
+    A: Digit or letter
+    E: unit symbol
+    """
+    #          'KKKKKK+*AAAAAAAA*EEECRLF'
+    response = 'N     +   0.1234 g  \r\n'
+    result = scale_driver._parse(response)
+
+    assert result['mass'] == 0.1234
+    assert result['units'] == 'g'
+    assert result['stable'] is True
+
+
 async def test_get_response(scale_driver, expected_response):
     """Confirm that the driver returns correct values on get_info() calls."""
     assert expected_response == await scale_driver.get_info()
