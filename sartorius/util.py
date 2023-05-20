@@ -15,24 +15,12 @@ logger = logging.getLogger('sartorius')
 class Client(ABC):
     """Base class for a generic reconnecting client."""
 
-    def __init__(self) -> None:
+    def __init__(self, timeout: float) -> None:
         """Initialize the client."""
         self.eol = b'\r\n'
         self.open = False
+        self.timeout = timeout
         self.lock: Optional[asyncio.Lock] = None
-
-    async def __aenter__(self) -> Any:
-        """Provide async entrance to context manager."""
-        await self._handle_connection()
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        """Provide exit to context manager."""
-        self.close()
-
-    async def __aexit__(self, *args: Any) -> None:
-        """Provide async exit to context manager."""
-        self.close()
 
     def close(self) -> None:
         """Close the connection."""
@@ -77,15 +65,17 @@ class TcpClient(Client):
     communicating over TCP.
     """
 
-    def __init__(self, ip: str, port: int) -> None:
+    def __init__(self, address: str, timeout: float = 1.0):
         """Set connection parameters.
 
         Connection is handled asynchronously, either using `async with` or
         behind the scenes on the first `await` call.
         """
-        super().__init__()
-        self.ip = ip
-        self.port = port
+        super().__init__(timeout)
+        try:
+            self.address, self.port = address.split(':')
+        except ValueError as e:
+            raise ValueError('address must be hostname:port') from e
         self.reconnecting = False
         self.timeouts = 0
         self.max_timeouts = 10
@@ -100,7 +90,7 @@ class TcpClient(Client):
     async def _connect(self) -> None:
         """Asynchronously open a TCP connection with the server."""
         self.close()
-        reader, writer = await asyncio.open_connection(self.ip, self.port)
+        reader, writer = await asyncio.open_connection(self.address, self.port)
         self.connection = {'reader': reader, 'writer': writer}
         self.open = True
 
@@ -112,7 +102,7 @@ class TcpClient(Client):
             self.reconnecting = False
         except (asyncio.TimeoutError, OSError):
             if not self.reconnecting:
-                logger.error(f'Connecting to {self.ip} timed out.')
+                logger.error(f'Connecting to {self.address} timed out.')
             self.reconnecting = True
 
     async def _handle_communication(self, command: str) -> Optional[str]:
@@ -126,7 +116,7 @@ class TcpClient(Client):
         except (asyncio.TimeoutError, TypeError, OSError):
             self.timeouts += 1
             if self.timeouts == self.max_timeouts:
-                logger.error(f'Reading from {self.ip} timed out '
+                logger.error(f'Reading from {self.address} timed out '
                              f'{self.timeouts} times.')
                 self.close()
             result = None
