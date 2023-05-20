@@ -39,7 +39,7 @@ class Scale:
         else:
             self.hw = TcpClient(address=address, **kwargs)
 
-    async def __aenter__(self, *args: Any) -> Any:
+    async def __aenter__(self, *args: Any) -> 'Scale':
         """Provide async enter to context manager."""
         return self
 
