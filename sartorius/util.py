@@ -1,4 +1,4 @@
-"""Base functionality for async TCP communication.
+"""Base functionality for async communication.
 
 Distributed under the GNU General Public License v2
 Copyright (C) 2019 NuMat Technologies
@@ -11,34 +11,17 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger('sartorius')
 
 
-class TcpClient():
-    """A generic reconnecting asyncio TCP client.
+class Client:
+    """Base class for a generic reconnecting client."""
 
-    This base functionality can be used by any industrial control device
-    communicating over TCP.
-    """
-
-    def __init__(self, ip: str, port: int, eol: str = '\r\n'):
-        """Set connection parameters.
-
-        Connection is handled asynchronously, either using `async with` or
-        behind the scenes on the first `await` call.
-        """
-        self.ip = ip
-        self.port = port
-        self.eol = eol.encode()
+    def __init__(self) -> None:
+        """Initialize the client."""
+        self.eol = b'\r\n'
         self.open = False
-        self.reconnecting = False
-        self.timeouts = 0
-        self.max_timeouts = 10
-        self.connection: Dict[str, Any] = {}
         self.lock: Optional[asyncio.Lock] = None
 
     async def __aenter__(self) -> Any:
-        """Provide async entrance to context manager.
-
-        Contrasting synchronous access, this will connect on initialization.
-        """
+        """Provide async entrance to context manager."""
         await self._handle_connection()
         return self
 
@@ -51,17 +34,8 @@ class TcpClient():
         self.close()
 
     def close(self) -> None:
-        """Close the TCP connection."""
-        if self.open:
-            self.connection['writer'].close()
+        """Close the connection."""
         self.open = False
-
-    async def _connect(self) -> None:
-        """Asynchronously open a TCP connection with the server."""
-        self.close()
-        reader, writer = await asyncio.open_connection(self.ip, self.port)
-        self.connection = {'reader': reader, 'writer': writer}
-        self.open = True
 
     async def _write_and_read(self, command: str) -> Optional[str]:
         """Write a command and read a response.
@@ -83,6 +57,49 @@ class TcpClient():
             else:
                 response = None
         return response
+
+    async def _handle_connection(self) -> None:
+        """Automatically maintain the connection."""
+        raise NotImplementedError
+
+    async def _handle_communication(self, command: str) -> Optional[str]:
+        """Manage communication, including timeouts and logging."""
+        raise NotImplementedError
+
+
+class TcpClient(Client):
+    """A generic reconnecting asyncio TCP client.
+
+    This base functionality can be used by any industrial control device
+    communicating over TCP.
+    """
+
+    def __init__(self, ip: str, port: int) -> None:
+        """Set connection parameters.
+
+        Connection is handled asynchronously, either using `async with` or
+        behind the scenes on the first `await` call.
+        """
+        super().__init__()
+        self.ip = ip
+        self.port = port
+        self.reconnecting = False
+        self.timeouts = 0
+        self.max_timeouts = 10
+        self.connection: Dict[str, Any] = {}
+
+    def close(self) -> None:
+        """Close the TCP connection."""
+        if self.open:
+            self.connection['writer'].close()
+        self.open = False
+
+    async def _connect(self) -> None:
+        """Asynchronously open a TCP connection with the server."""
+        self.close()
+        reader, writer = await asyncio.open_connection(self.ip, self.port)
+        self.connection = {'reader': reader, 'writer': writer}
+        self.open = True
 
     async def _handle_connection(self) -> None:
         """Automatically maintain TCP connection."""
