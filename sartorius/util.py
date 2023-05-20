@@ -6,12 +6,13 @@ Copyright (C) 2019 NuMat Technologies
 
 import asyncio
 import logging
+from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 
 logger = logging.getLogger('sartorius')
 
 
-class Client:
+class Client(ABC):
     """Base class for a generic reconnecting client."""
 
     def __init__(self) -> None:
@@ -58,13 +59,15 @@ class Client:
                 response = None
         return response
 
+    @abstractmethod
     async def _handle_connection(self) -> None:
         """Automatically maintain the connection."""
-        raise NotImplementedError
+        ...
 
+    @abstractmethod
     async def _handle_communication(self, command: str) -> Optional[str]:
         """Manage communication, including timeouts and logging."""
-        raise NotImplementedError
+        ...
 
 
 class TcpClient(Client):
