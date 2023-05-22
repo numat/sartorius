@@ -6,11 +6,13 @@ import pytest
 from sartorius import command_line
 from sartorius.mock import Scale
 
+ADDRESS = 'fakeip:49155'
+
 
 @pytest.fixture()
 def scale_driver():
     """Confirm the scale correctly initializes."""
-    return Scale('fakeip:49155')
+    return Scale(ADDRESS)
 
 
 @pytest.fixture()
@@ -24,7 +26,7 @@ def expected_response():
 @mock.patch('sartorius.Scale', Scale)
 def test_driver_cli(capsys):
     """Confirm the commandline interface works."""
-    command_line(['fakeip:49155'])
+    command_line([ADDRESS])
     captured = capsys.readouterr()
     assert '"stable": true' in captured.out
 
@@ -68,7 +70,7 @@ async def test_readme_example(expected_response):
     """Confirm the readme example using an async context manager works."""
 
     async def get():
-        async with Scale('scale-ip.local') as scale:
+        async with Scale(ADDRESS) as scale:
             await scale.zero()             # Zero and tare the scale
             response = await scale.get()       # Get mass, units, stability
             assert response['stable'] is True
