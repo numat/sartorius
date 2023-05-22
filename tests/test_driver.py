@@ -6,11 +6,13 @@ import pytest
 from sartorius import command_line
 from sartorius.mock import Scale
 
+ADDRESS = 'fakeip:49155'
+
 
 @pytest.fixture()
 def scale_driver():
     """Confirm the scale correctly initializes."""
-    return Scale('fakeip')
+    return Scale(ADDRESS)
 
 
 @pytest.fixture()
@@ -24,9 +26,39 @@ def expected_response():
 @mock.patch('sartorius.Scale', Scale)
 def test_driver_cli(capsys):
     """Confirm the commandline interface works."""
-    command_line(['fakeip'])
+    command_line([ADDRESS])
     captured = capsys.readouterr()
     assert '"stable": true' in captured.out
+
+
+@pytest.mark.parametrize(('response', 'expected'),
+                         #  KKKKKK+*AAAAAAAA*EEECRLF    mass   units  stable
+                         [('N     +   0.1234 g  \r\n', (0.1234, 'g', True)),
+                          ('N     +   9.9999 kg \r\n', (9.9999, 'kg', True)),
+                          ('N     +   5.4321    \r\n', (5.4321, '', False))])
+def test_parse(scale_driver, response, expected):
+    """Test the response parsing code.
+
+    Scale weight is returned according to the SMA communication standard:
+    K K K K K K + * A A A A A A A A * E E E CR LF
+    K: ID code character
+    +: plus or minus
+    *: space
+    A: Digit or letter
+    E: unit symbol
+    """
+    result = scale_driver._parse(response)
+
+    assert result['mass'] == expected[0]
+    assert result['units'] == expected[1]
+    assert result['stable'] == expected[2]
+
+
+def test_parse_errors(scale_driver):
+    """Test error handling of response parsing code."""
+    response = 'G     +   0.1234 g  \r\n'
+    with pytest.raises(ValueError, match='This driver only supports net weight.'):
+        scale_driver._parse(response)
 
 
 async def test_get_response(scale_driver, expected_response):
@@ -38,7 +70,7 @@ async def test_readme_example(expected_response):
     """Confirm the readme example using an async context manager works."""
 
     async def get():
-        async with Scale('scale-ip.local') as scale:
+        async with Scale(ADDRESS) as scale:
             await scale.zero()             # Zero and tare the scale
             response = await scale.get()       # Get mass, units, stability
             assert response['stable'] is True
