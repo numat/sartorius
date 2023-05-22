@@ -7,7 +7,9 @@ Copyright (C) 2019 NuMat Technologies
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
+
+import serial
 
 logger = logging.getLogger('sartorius')
 
@@ -20,6 +22,7 @@ class Client(ABC):
         self.eol = b'\r\n'
         self.open = False
         self.timeout = timeout
+        self.max_timeouts = 10
         self.lock: Optional[asyncio.Lock] = None
 
     def close(self) -> None:
@@ -58,6 +61,48 @@ class Client(ABC):
         ...
 
 
+class SerialClient(Client):
+    """Client using a directly-connected RS232 serial device."""
+
+    def __init__(self, address: str, baudrate: int = 9600, timeout: float = .15,
+                 bytesize: int = serial.EIGHTBITS,
+                 stopbits: Union[float, int] = serial.STOPBITS_ONE,
+                 parity: str = serial.PARITY_ODD):
+        """Initialize serial port."""
+        super().__init__(timeout)
+        self.address = address
+        assert type(self.address) == str
+        self.serial_details = {'baudrate': baudrate,
+                               'bytesize': bytesize,
+                               'stopbits': stopbits,
+                               'parity': parity,
+                               'timeout': timeout}
+        self.ser = serial.Serial(self.address, **self.serial_details)  # type: ignore [arg-type]
+
+    def close(self) -> None:
+        """Close the serial connection."""
+        if self.ser and self.ser.is_open:
+            self.ser.close()
+
+    async def _handle_connection(self) -> None:
+        """Handle the serial connection status."""
+        self.open = True
+
+    async def _handle_communication(self, command: str) -> Optional[str]:
+        """Manage communication, including timeouts and logging."""
+        try:
+            self.ser.write(command.encode())
+            response = self.ser.readline().decode().strip()
+            self.timeouts = 0
+        except (serial.SerialTimeoutException, serial.SerialException):
+            self.timeouts += 1
+            if self.timeouts == self.max_timeouts:
+                print(f'Reading from {self.address} timed out {self.timeouts} times.')
+                self.close()
+            response = None
+        return response
+
+
 class TcpClient(Client):
     """A generic reconnecting asyncio TCP client.
 
@@ -78,7 +123,6 @@ class TcpClient(Client):
             raise ValueError('address must be hostname:port') from e
         self.reconnecting = False
         self.timeouts = 0
-        self.max_timeouts = 10
         self.connection: Dict[str, Any] = {}
 
     def close(self) -> None:

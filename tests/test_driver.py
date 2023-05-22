@@ -10,7 +10,7 @@ from sartorius.mock import Scale
 @pytest.fixture()
 def scale_driver():
     """Confirm the scale correctly initializes."""
-    return Scale('fakeip')
+    return Scale('fakeip:49155')
 
 
 @pytest.fixture()
@@ -24,7 +24,7 @@ def expected_response():
 @mock.patch('sartorius.Scale', Scale)
 def test_driver_cli(capsys):
     """Confirm the commandline interface works."""
-    command_line(['fakeip'])
+    command_line(['fakeip:49155'])
     captured = capsys.readouterr()
     assert '"stable": true' in captured.out
 

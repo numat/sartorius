@@ -7,7 +7,7 @@ Copyright (C) 2019 NuMat Technologies
 import logging
 from typing import Any
 
-from sartorius.util import TcpClient
+from sartorius.util import Client, SerialClient, TcpClient
 
 logger = logging.getLogger('sartorius')
 
@@ -34,8 +34,7 @@ class Scale:
             address = f'{ip}:{port}'
         self.units: str = ""
         if address.startswith('/dev') or address.startswith('COM'):  # serial
-            raise NotImplementedError
-            # self.hw: Client = SerialClient(address=address, **kwargs)
+            self.hw: Client = SerialClient(address=address, **kwargs)
         else:
             self.hw = TcpClient(address=address, **kwargs)
 

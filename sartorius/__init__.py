@@ -16,9 +16,7 @@ def command_line(args: Any = None) -> None:
     import json
 
     parser = argparse.ArgumentParser(description="Read scale status.")
-    parser.add_argument('address', help="The IP address of the scale.")
-    parser.add_argument('-p', '--port', help="The port of the scale (default 49155)",
-                        type=int, default=49155)
+    parser.add_argument('address', help="The serial or IP address of the scale.")
     parser.add_argument('-n', '--no-info', action='store_true', help="Exclude "
                         "scale information. Reduces communication overhead.")
     parser.add_argument('-z', '--zero', action='store_true', help="Tares and "
@@ -26,7 +24,7 @@ def command_line(args: Any = None) -> None:
     args = parser.parse_args(args)
 
     async def get() -> None:
-        async with Scale(args.address, args.port) as scale:
+        async with Scale(address=args.address) as scale:
             if args.zero:
                 await scale.zero()
             d = await scale.get()
