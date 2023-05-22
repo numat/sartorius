@@ -19,8 +19,8 @@ class Scale:
     standardized communications protocol.
     """
 
-    def __init__(self, ip: str = '', port: int = 49155,
-                 address: str = '', **kwargs: Any) -> None:
+    def __init__(self, address: str = '', ip: str = '', port: int = 49155,
+                 **kwargs: Any) -> None:
         """Set up connection parameters, IP address and port.
 
         Accepts either an address string (TCP or serial), or combination
@@ -36,6 +36,8 @@ class Scale:
         if address.startswith('/dev') or address.startswith('COM'):  # serial
             self.hw: Client = SerialClient(address=address, **kwargs)
         else:
+            if ':' not in address:
+                address = f'{address}:{port}'
             self.hw = TcpClient(address=address, **kwargs)
 
     async def __aenter__(self, *args: Any) -> 'Scale':
