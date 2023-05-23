@@ -24,7 +24,8 @@ class Scale(RealScale):
         super().__init__(*args, **kwargs)
         self.info = {"model": "SIWADCP-1-",
                      "serial": "37454321",
-                     "software": "00-37-09"}
+                     "software": "00-37-09",
+                     "measurement": "net"}
 
     async def get(self) -> dict:
         """Get scale reading."""

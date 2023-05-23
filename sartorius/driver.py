@@ -108,8 +108,12 @@ class Scale:
             error = response[9:14].strip()
             logger.warning(f'Could not read: {error}')
             return {'on': False}
-        elif id != 'N':
-            raise ValueError("This driver only supports net weight.")
+        elif id == 'N':
+            measurement = 'net'
+        elif id == 'G':
+            measurement = 'gross'
+        else:
+            raise ValueError("This driver only supports net/gross weight.")
         mass = float(response[6:16].replace(' ', ''))
         units = response[17:20].strip()
         if units:
@@ -122,4 +126,5 @@ class Scale:
             'mass': mass,
             'units': units,
             'stable': stable,
+            'measurement': measurement,
         }

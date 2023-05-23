@@ -20,7 +20,8 @@ def expected_response():
     """Return mocked scale data."""
     return {'model': 'SIWADCP-1-',
             'serial': '37454321',
-            'software': '00-37-09'}
+            'software': '00-37-09',
+            'measurement': 'net'}
 
 
 @mock.patch('sartorius.Scale', Scale)
@@ -32,10 +33,10 @@ def test_driver_cli(capsys):
 
 
 @pytest.mark.parametrize(('response', 'expected'),
-                         #  KKKKKK+*AAAAAAAA*EEECRLF    mass   units  stable
-                         [('N     +   0.1234 g  \r\n', (0.1234, 'g', True)),
-                          ('N     +   9.9999 kg \r\n', (9.9999, 'kg', True)),
-                          ('N     +   5.4321    \r\n', (5.4321, '', False))])
+                         #  KKKKKK+*AAAAAAAA*EEECRLF    mass   units stable measurement
+                         [('N     +   0.1234 g  \r\n', (0.1234, 'g', True, 'net')),
+                          ('G     +   9.9999 kg \r\n', (9.9999, 'kg', True, 'gross')),
+                          ('N     +   5.4321    \r\n', (5.4321, '', False, 'net'))])
 def test_parse(scale_driver, response, expected):
     """Test the response parsing code.
 
@@ -52,12 +53,13 @@ def test_parse(scale_driver, response, expected):
     assert result['mass'] == expected[0]
     assert result['units'] == expected[1]
     assert result['stable'] == expected[2]
+    assert result['measurement'] == expected[3]
 
 
 def test_parse_errors(scale_driver):
     """Test error handling of response parsing code."""
-    response = 'G     +   0.1234 g  \r\n'
-    with pytest.raises(ValueError, match='This driver only supports net weight.'):
+    response = 'X     +   0.1234 g  \r\n'
+    with pytest.raises(ValueError, match='This driver only supports net/gross weight.'):
         scale_driver._parse(response)
 
 
