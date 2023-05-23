@@ -92,7 +92,8 @@ class SerialClient(Client):
         """Manage communication, including timeouts and logging."""
         try:
             self.ser.write(command.encode())
-            response = self.ser.readline().decode().strip()
+            # don't strip() to keep the line length == 22
+            response = self.ser.readline().decode()
             self.timeouts = 0
         except (serial.SerialTimeoutException, serial.SerialException):
             self.timeouts += 1
