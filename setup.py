@@ -5,14 +5,16 @@ with open('README.md') as in_file:
     long_description = in_file.read()
 
 setup(
-    name="sartorius",
+    name='sartorius',
     version="0.5.0",
-    description="Python driver for Sartorius and Minebea Intec scales.",
+    description='Python driver for Sartorius and Minebea Intec scales.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url="https://github.com/numat/sartorius/",
-    author="Patrick Fuller",
-    author_email="pat@numat-tech.com",
+    url='https://github.com/numat/sartorius/',
+    author='Patrick Fuller',
+    author_email='pat@numat-tech.com',
+    maintainer='Alex Ruddick',
+    maintainer_email='alex@numat-tech.com',
     packages=['sartorius'],
     package_data={'sartorius': ['py.typed']},
     install_requires=['pyserial'],
