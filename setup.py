@@ -20,13 +20,14 @@ setup(
     install_requires=['pyserial'],
     extras_require={
 
-        'test': [
+        'dev': [
             'mypy==1.5.1',
             'pytest>=6,<8',
             'pytest-cov>=4,<5',
             'pytest-asyncio==0.*',
             'ruff==0.0.287',
             'types-pyserial',
+            'bump-my-version',
         ]
     },
     entry_points={
