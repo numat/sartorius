@@ -1,11 +1,13 @@
+exclude = ["venv*"]
 line-length = 99
-ignore = [
+target-version = "py38"
+lint.ignore = [
     "PLR2004",
     "D104",
     "D107",
     "C901",
 ]
-select = [
+lint.select = [
   "ARG", # flake8-unused args
   "B",   # bandit
   "C",   # complexity
@@ -19,9 +21,5 @@ select = [
   "UP",  # pyupgrade
   "YTT", # flake8-2020
   ]
-
-target-version = "py38"
-[pydocstyle]
+[lint.pydocstyle]
 convention = "pep257"
-[flake8-unused-arguments]
-ignore-variadic-names = true
