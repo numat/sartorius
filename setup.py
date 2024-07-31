@@ -21,7 +21,7 @@ setup(
     extras_require={
 
         'test': [
-            'mypy==1.11.0',
+            'mypy==1.11.1',
             'pytest>=8,<9',
             'pytest-cov>=5,<6',
             'pytest-asyncio==0.*',
