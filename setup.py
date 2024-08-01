@@ -25,7 +25,7 @@ setup(
             'pytest>=8,<9',
             'pytest-cov>=5,<6',
             'pytest-asyncio==0.*',
-            'ruff==0.5.2',
+            'ruff==0.5.5',
             'types-pyserial',
         ]
     },
