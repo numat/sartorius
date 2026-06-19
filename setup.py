@@ -22,7 +22,7 @@ setup(
 
         'test': [
             'mypy==1.14.1',
-            'pytest>=8,<9',
+            'pytest>=9,<10',
             'pytest-cov>=5,<6',
             'pytest-asyncio==0.*',
             'ruff==0.5.5',
